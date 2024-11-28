@@ -1,0 +1,21 @@
+<h1>Resultados da busca: {{ termo }}</h1>
+
+{% if erros %}
+    <h2>Erros Encontrados:</h2>
+    <ul>
+    {% for erro in erros %}
+        <li>{{ erro }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<ul>
+{% for produto in produtos %}
+    <li>
+        <h3>{{ produto.nome }}</h3>
+        <p>Preço: {{ produto.preco }}</p>
+        <img src="{{ produto.imagem }}" alt="Imagem do Produto">
+        <a href="{{ produto.link }}">Ver Produto</a>
+    </li>
+{% endfor %}
+</ul>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração do Banco de Dados</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .link-container, .categoria-container {
+            max-width: 200px; /* Limita a largura do link e da categoria */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Adiciona reticências para texto que ultrapassar o limite */
+            white-space: nowrap; /* Impede a quebra de linha */
+        }
+        .link-container a, .categoria-container {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .link-container a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .link-container a:hover {
+            text-decoration: underline;
+        }
+        img {
+            max-width: 100px; /* Limita a largura da imagem */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Administração do Banco de Dados</h1>
+
+    <h2>Pesquisar Produtos</h2>
+    <form action="{{ url_for('admin') }}" method="get">
+        <label for="pesquisa_nome">Nome do Produto:</label>
+        <input type="text" id="pesquisa_nome" name="pesquisa_nome" value="{{ pesquisa_nome }}"><br>
+        <label for="pesquisa_categoria">Categoria:</label>
+        <select id="pesquisa_categoria" name="pesquisa_categoria">
+            <option value="">Todas</option>
+            {% for categoria in categorias %}
+                <option value="{{ categoria }}" {% if pesquisa_categoria == categoria %}selected{% endif %}>{{ categoria }}</option>
+            {% endfor %}
+        </select><br>
+        <input type="submit" value="Pesquisar">
+    </form>
+
+    <h2>Inserir Novo Produto</h2>
+    <form action="{{ url_for('admin') }}" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br>
+        <label for="preco">Preço:</label>
+        <input type="text" id="preco" name="preco" required><br>
+        <label for="imagem">Imagem URL:</label>
+        <input type="text" id="imagem" name="imagem" required><br>
+        <label for="link">Link:</label>
+        <input type="text" id="link" name="link" required><br>
+        <label for="categoria">Categoria:</label>
+        <input type="text" id="categoria" name="categoria" required><br>
+        <input type="submit" name="inserir" value="Inserir Produto">
+    </form>
+
+    <h2>Atualizar ou Excluir Produtos</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Imagem</th>
+            <th>Link</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+        </tr>
+        {% for produto in produtos %}
+            <tr>
+                <td>{{ produto[0] }}</td>
+                <td>{{ produto[1] }}</td>
+                <td>{{ produto[2] }}</td>
+                <td><img src="{{ produto[3] }}" alt="{{ produto[1] }}"></td>
+                <td class="link-container"><a href="{{ produto[4] }}" target="_blank">{{ produto[4] }}</a></td>
+                <td class="categoria-container">{{ produto[5] }}</td> <!-- Aqui deve exibir a categoria -->
+                <td>
+                    <form action="{{ url_for('admin') }}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ produto[0] }}">
+                        <input type="text" name="nome" value="{{ produto[1] }}" required>
+                        <input type="text" name="preco" value="{{ produto[2] }}" required>
+                        <input type="text" name="imagem" value="{{ produto[3] }}" required>
+                        <input type="text" name="link" value="{{ produto[4] }}" required>
+                        <input type="text" name="categoria" value="{{ produto[5] }}" required> <!-- Campo de categoria -->
+                        <input type="submit" name="atualizar" value="Atualizar">
+                    </form>
+                    <form action="{{ url_for('admin') }}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ produto[0] }}">
+                        <input type="submit" name="excluir" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('index') }}">Voltar para a Pesquisa de Produtos</a>
+</body>
+</html>
